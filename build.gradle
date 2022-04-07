@@ -3,16 +3,33 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id 'jacoco'
+	id 'idea'
 }
 
 group = 'br.com.softdesigner'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+sourceSets {
+	integrationTest {
+		java {
+			compileClasspath += main.output + test.output
+			runtimeClasspath += main.output + test.output
+		}
 	}
+}
+
+idea {
+	module {
+		testSourceDirs += sourceSets.integrationTest.java.srcDirs
+		testSourceDirs += sourceSets.integrationTest.resources.srcDirs
+	}
+}
+
+configurations {
+	compileOnly.extendsFrom annotationProcessor
+	integrationTestImplementation.extendsFrom testImplementation
+	integrationTestRuntime.extendsFrom testRuntime
 }
 
 repositories {
