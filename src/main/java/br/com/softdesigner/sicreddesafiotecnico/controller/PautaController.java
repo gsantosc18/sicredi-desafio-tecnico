@@ -1,10 +1,8 @@
 package br.com.softdesigner.sicreddesafiotecnico.controller;
 
-import br.com.softdesigner.sicreddesafiotecnico.document.PautaDocument;
 import br.com.softdesigner.sicreddesafiotecnico.dto.CreatePautaDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.PautaDTO;
 import br.com.softdesigner.sicreddesafiotecnico.service.PautaService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,9 +15,12 @@ import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping("/pauta")
-@RequiredArgsConstructor
 public class PautaController {
-    private PautaService pautaService;
+    private final PautaService pautaService;
+
+    public PautaController(PautaService pautaService) {
+        this.pautaService = pautaService;
+    }
 
     @GetMapping
     public Flux<PautaDTO> getAll() {
