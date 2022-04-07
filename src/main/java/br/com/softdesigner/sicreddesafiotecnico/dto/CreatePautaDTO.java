@@ -1,8 +1,8 @@
 package br.com.softdesigner.sicreddesafiotecnico.dto;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class CreatePautaDTO {
     private String nome;
 }

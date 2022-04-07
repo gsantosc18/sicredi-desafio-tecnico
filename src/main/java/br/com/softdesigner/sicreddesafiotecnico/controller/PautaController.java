@@ -1,5 +1,6 @@
 package br.com.softdesigner.sicreddesafiotecnico.controller;
 
+import br.com.softdesigner.sicreddesafiotecnico.document.PautaDocument;
 import br.com.softdesigner.sicreddesafiotecnico.dto.CreatePautaDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.PautaDTO;
 import br.com.softdesigner.sicreddesafiotecnico.service.PautaService;

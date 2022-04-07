@@ -1,6 +1,6 @@
 package br.com.softdesigner.sicreddesafiotecnico.service;
 
-import br.com.softdesigner.sicreddesafiotecnico.converter.Pauta;
+import br.com.softdesigner.sicreddesafiotecnico.converter.PautaConverter;
 import br.com.softdesigner.sicreddesafiotecnico.document.PautaDocument;
 import br.com.softdesigner.sicreddesafiotecnico.dto.CreatePautaDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.PautaDTO;
@@ -24,11 +24,10 @@ public class PautaService {
     }
 
     public Flux<PautaDTO> getAll() {
-        return pautaRepository.findAll()
-            .map(Pauta::toDto);
+        return pautaRepository.findAll().map(PautaConverter::toDto);
     }
 
     public Mono<PautaDTO> findById(String id) {
-        return pautaRepository.findById(id).map(Pauta::toDto);
+        return pautaRepository.findById(id).map(PautaConverter::toDto);
     }
 }
