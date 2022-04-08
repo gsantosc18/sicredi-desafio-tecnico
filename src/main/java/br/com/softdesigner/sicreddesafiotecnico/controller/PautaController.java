@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping("/pauta")
@@ -29,7 +29,7 @@ public class PautaController {
 
     @PostMapping
     public ResponseEntity createPauta(CreatePautaDTO createPautaDTO) {
-        pautaService.createPauta(createPautaDTO);
-        return status(CREATED).build();
+        Mono<PautaDTO> createdPauta = pautaService.createPauta(createPautaDTO);
+        return ResponseEntity.status(CREATED).body(createdPauta);
     }
 }

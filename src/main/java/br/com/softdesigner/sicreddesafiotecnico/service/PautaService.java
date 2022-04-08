@@ -19,10 +19,10 @@ public class PautaService {
         this.pautaRepository = pautaRepository;
     }
 
-    public void createPauta(CreatePautaDTO createPautaDTO) {
+    public Mono<PautaDTO> createPauta(CreatePautaDTO createPautaDTO) {
         final String id = UUID.randomUUID().toString();
         final PautaDocument pautaDocument = new PautaDocument(id, createPautaDTO.getNome());
-        pautaRepository.save(pautaDocument);
+        return pautaRepository.save(pautaDocument).map(PautaConverter::toDto);
     }
 
     public Flux<PautaDTO> getAll() {
