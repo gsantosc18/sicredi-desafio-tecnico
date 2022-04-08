@@ -2,6 +2,7 @@ package br.com.softdesigner.sicreddesafiotecnico.controller;
 
 import br.com.softdesigner.sicreddesafiotecnico.document.PautaDocument;
 import br.com.softdesigner.sicreddesafiotecnico.dto.CreatePautaDTO;
+import br.com.softdesigner.sicreddesafiotecnico.dto.PautaDTO;
 import br.com.softdesigner.sicreddesafiotecnico.repository.PautaRepository;
 import br.com.softdesigner.sicreddesafiotecnico.service.PautaService;
 import org.junit.jupiter.api.DisplayName;
@@ -13,9 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -35,10 +38,10 @@ public class PautaControllerTest {
     @Test
     @DisplayName("Should Create new pauta")
     public void shouldCreateNewPauta() {
-        PautaDocument pautaDocument = new PautaDocument("123456789","Teste de pauta");
-        CreatePautaDTO createPautaDTO = new CreatePautaDTO(pautaDocument.getNome());
+        CreatePautaDTO createPautaDTO = new CreatePautaDTO(getPautaDocument().getNome());
 
-        given(pautaRepository.save(pautaDocument)).willReturn(Mono.just(pautaDocument));
+        given(pautaRepository.save(any()))
+            .willReturn(Mono.just(getPautaDocument()));
 
         webTestClient.post()
                 .uri(ENDPOINT)
@@ -46,7 +49,8 @@ public class PautaControllerTest {
                 .body(Mono.just(createPautaDTO), CreatePautaDTO.class)
                 .exchange()
                 .expectStatus()
-                .isCreated();
+                .isCreated()
+                .expectBody(PautaDTO.class);
 
         verify(pautaRepository).save(any(PautaDocument.class));
     }
@@ -54,6 +58,37 @@ public class PautaControllerTest {
     @Test
     @DisplayName("Should find all pautas")
     public void shouldFindAllPautas() {
+        given(pautaRepository.findAll())
+                .willReturn(Flux.just(getPautaDocument()));
 
+        webTestClient.get()
+            .uri(uriBuilder ->
+                uriBuilder.path(ENDPOINT)
+                    .queryParam("nome",getPautaDocument().getNome())
+                    .build())
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .expectBody()
+            .jsonPath("$.length()").isEqualTo(1)
+            .jsonPath("$[0].id").isEqualTo(getPautaDocument().getId())
+            .jsonPath("$[0].nome").isEqualTo(getPautaDocument().getNome());
+    }
+
+    @Test
+    @DisplayName("Shouldn't find pauta by id")
+    public void shouldFindPautaById() {
+        given(pautaRepository.findById(anyString()))
+                .willReturn(Mono.empty());
+
+        webTestClient.get()
+                .uri(ENDPOINT.concat("/").concat(getPautaDocument().getNome()))
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
+    private PautaDocument getPautaDocument() {
+        return new PautaDocument("123456789", "Teste de pauta");
     }
 }
