@@ -1,18 +1,15 @@
-package br.com.softdesigner.sicreddesafiotecnico.controller;
+package br.com.softdesigner.sicreddesafiotecnico.router;
 
 import br.com.softdesigner.sicreddesafiotecnico.document.PautaDocument;
 import br.com.softdesigner.sicreddesafiotecnico.dto.CreatePautaDTO;
-import br.com.softdesigner.sicreddesafiotecnico.dto.PautaDTO;
+import br.com.softdesigner.sicreddesafiotecnico.handler.PautaHandler;
 import br.com.softdesigner.sicreddesafiotecnico.repository.PautaRepository;
-import br.com.softdesigner.sicreddesafiotecnico.service.PautaService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,12 +18,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-@ExtendWith(SpringExtension.class)
-@WebFluxTest(controllers = PautaController.class)
-@Import({PautaRepository.class, PautaService.class})
-public class PautaControllerTest {
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@Import({PautaHandler.class, PautaRouter.class})
+public class PautaRouterTest {
     @MockBean
     private PautaRepository pautaRepository;
 
@@ -39,6 +36,7 @@ public class PautaControllerTest {
     @DisplayName("Should Create new pauta")
     public void shouldCreateNewPauta() {
         CreatePautaDTO createPautaDTO = new CreatePautaDTO(getPautaDocument().getNome());
+        Mono<CreatePautaDTO> publisher = Mono.just(createPautaDTO);
 
         given(pautaRepository.save(any()))
             .willReturn(Mono.just(getPautaDocument()));
@@ -46,11 +44,15 @@ public class PautaControllerTest {
         webTestClient.post()
                 .uri(ENDPOINT)
                 .contentType(APPLICATION_JSON)
-                .body(Mono.just(createPautaDTO), CreatePautaDTO.class)
+                .body(publisher, CreatePautaDTO.class)
                 .exchange()
                 .expectStatus()
                 .isCreated()
-                .expectBody(PautaDTO.class);
+                .expectBody()
+                .jsonPath("$.nome")
+                .isEqualTo(getPautaDocument().getNome())
+                .jsonPath("$.id")
+                .isEqualTo(getPautaDocument().getId());
 
         verify(pautaRepository).save(any(PautaDocument.class));
     }
