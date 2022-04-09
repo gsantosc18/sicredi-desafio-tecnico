@@ -1,38 +1,31 @@
 package br.com.softdesigner.sicreddesafiotecnico.router;
 
+import br.com.softdesigner.sicreddesafiotecnico.BaseTest;
 import br.com.softdesigner.sicreddesafiotecnico.document.PautaDocument;
 import br.com.softdesigner.sicreddesafiotecnico.document.SessaoDocument;
 import br.com.softdesigner.sicreddesafiotecnico.dto.CreateSessaoDTO;
-import br.com.softdesigner.sicreddesafiotecnico.dto.SessaoDTO;
 import br.com.softdesigner.sicreddesafiotecnico.handler.SessaoHandler;
 import br.com.softdesigner.sicreddesafiotecnico.repository.PautaRepository;
 import br.com.softdesigner.sicreddesafiotecnico.repository.SessaoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
 @Import({SessaoRouter.class, SessaoHandler.class})
-public class SessaoRouterTest {
+public class SessaoRouterTest extends BaseTest {
     public static final String ENDPOINT = "/sessao";
     public static final String FIND_BY_ID = ENDPOINT + "/{id}";
-    public static final String PAUTA_ID = "123456789";
-    public static final String PAUTA_NAME = "Pauta test";
-    public static final String SESSION_ID = "123456";
     public static final long MINUTES = 2L;
     @MockBean
     private SessaoRepository sessaoRepository;
@@ -107,18 +100,5 @@ public class SessaoRouterTest {
                 .expectStatus().isNotFound()
                 .expectBody()
                 .isEmpty();
-    }
-
-    private PautaDocument getPautaDocument() {
-        return new PautaDocument(PAUTA_ID, PAUTA_NAME);
-    }
-
-    private SessaoDocument getSessaoDocument(Long minutes) {
-        return new SessaoDocument(SESSION_ID,getPautaDocument(), getTimePlusMinutes(minutes));
-    }
-
-    private LocalDateTime getTimePlusMinutes(Long minutes) {
-        return LocalDateTime.of(2022,4,8,0,0,0)
-                .plusMinutes(minutes);
     }
 }
