@@ -36,11 +36,22 @@ repositories {
 	mavenCentral()
 }
 
+def springdocVersion = '1.4.6'
+
 dependencies {
+	// Spring
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// Swagger open api
+	implementation "org.springdoc:springdoc-openapi-webflux-core:$springdocVersion"
+	implementation "org.springdoc:springdoc-openapi-webflux-ui:$springdocVersion"
+
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 }
