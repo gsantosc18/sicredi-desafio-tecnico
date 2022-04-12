@@ -6,6 +6,7 @@ import lombok.Value;
 
 @Value
 public class CreateVotoDTO {
-    private VotoEnum votoEnum;
+    private String sessao;
     private String cpf;
+    private VotoEnum votoEnum;
 }

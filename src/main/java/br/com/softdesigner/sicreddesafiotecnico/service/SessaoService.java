@@ -44,6 +44,10 @@ public class SessaoService {
     }
 
     public Mono<SessaoDTO> findById(String id) {
-        return sessaoRepository.findById(id).map(SessaoConverter::toDto);
+        return findByIdDocument(id).map(SessaoConverter::toDto);
+    }
+
+    public Mono<SessaoDocument> findByIdDocument(String id) {
+        return sessaoRepository.findById(id);
     }
 }

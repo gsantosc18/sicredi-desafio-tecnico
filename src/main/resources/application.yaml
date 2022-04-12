@@ -2,3 +2,6 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://gsantosc18:bancoMongo%40123@cluster0.vnkd4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+
+user:
+  url: https://user-info.herokuapp.com

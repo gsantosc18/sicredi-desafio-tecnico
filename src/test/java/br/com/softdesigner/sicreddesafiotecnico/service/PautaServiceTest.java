@@ -1,21 +1,17 @@
 package br.com.softdesigner.sicreddesafiotecnico.service;
 
+import br.com.softdesigner.sicreddesafiotecnico.BaseTest;
 import br.com.softdesigner.sicreddesafiotecnico.document.PautaDocument;
 import br.com.softdesigner.sicreddesafiotecnico.dto.CreatePautaDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.PautaDTO;
 import br.com.softdesigner.sicreddesafiotecnico.repository.PautaRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-
-import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -23,8 +19,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-@ExtendWith(SpringExtension.class)
-class PautaServiceTest {
+class PautaServiceTest extends BaseTest {
     @Mock
     private PautaRepository pautaRepository;
 
@@ -34,11 +29,10 @@ class PautaServiceTest {
     @Test
     @DisplayName("Should create new pauta")
     void shouldCreateNewPauta() {
-        CreatePautaDTO createPautaDTO = new CreatePautaDTO("Pauta teste");
-        PautaDocument pautaDocument = getPautaDocument();
+        CreatePautaDTO createPautaDTO = new CreatePautaDTO(PAUTA_NAME);
 
         given(pautaRepository.save(any(PautaDocument.class)))
-                .willReturn(Mono.just(pautaDocument));
+                .willReturn(Mono.just(getPautaDocument()));
 
         pautaService.createPauta(createPautaDTO);
 
@@ -77,10 +71,10 @@ class PautaServiceTest {
     @Test
     @DisplayName("Should find pauta by id")
     void shouldFindPautaById() {
-        given(pautaRepository.findById(anyString()))
+        given(pautaRepository.findById(PAUTA_ID))
                 .willReturn(Mono.just(getPautaDocument()));
 
-        Mono<PautaDTO> foundPauta = pautaService.findById("123456");
+        Mono<PautaDTO> foundPauta = pautaService.findById(PAUTA_ID);
 
         StepVerifier.create(foundPauta)
                 .assertNext(pautaDTO -> {
@@ -93,17 +87,13 @@ class PautaServiceTest {
     @Test
     @DisplayName("Shouldn't find pauta by id")
     void shouldntFindPautaById() {
-        given(pautaRepository.findById(anyString()))
+        given(pautaRepository.findById(PAUTA_ID))
                 .willReturn(Mono.empty());
 
-        Mono<PautaDTO> foundPauta = pautaService.findById("123456");
+        Mono<PautaDTO> foundPauta = pautaService.findById(PAUTA_ID);
 
         StepVerifier.create(foundPauta)
                 .expectNextCount(0)
                 .verifyComplete();
-    }
-
-    private PautaDocument getPautaDocument() {
-        return new PautaDocument("123456789", "Teste");
     }
 }
