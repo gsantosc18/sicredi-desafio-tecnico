@@ -13,8 +13,8 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 @AllArgsConstructor
 public class VotoDocument {
     @DocumentReference
-    private AssociadoDocument associadoDocument;
+    private AssociadoDocument associado;
     @DocumentReference
-    private SessaoDocument sessaoDocument;
+    private SessaoDocument sessao;
     private VotoEnum voto;
 }
