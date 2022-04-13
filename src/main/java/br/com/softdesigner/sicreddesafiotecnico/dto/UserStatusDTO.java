@@ -1,9 +1,12 @@
 package br.com.softdesigner.sicreddesafiotecnico.dto;
 
-import br.com.softdesigner.sicreddesafiotecnico.enums.UserStatusEnum;
-import lombok.Value;
+import lombok.*;
 
-@Value
-public class UserStatusDTO {
-    private UserStatusEnum status;
+import java.io.Serializable;
+
+@Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserStatusDTO implements Serializable {
+    private String status;
 }

@@ -19,6 +19,7 @@ public class SessaoRouter implements SessaoRouterIT {
     public RouterFunction<ServerResponse> sessaoRoute(SessaoHandler sessaoHandler) {
         return RouterFunctions.
                 route(POST(ENDPOINT).and(accept(APPLICATION_JSON)),sessaoHandler::createSessao)
-                .andRoute(GET(FIND_BY_ID).and(accept(APPLICATION_JSON)), sessaoHandler::findById);
+                .andRoute(GET(FIND_BY_ID).and(accept(APPLICATION_JSON)), sessaoHandler::findById)
+                .andRoute(GET(ENDPOINT).and(accept(APPLICATION_JSON)),sessaoHandler::getAll);
     }
 }

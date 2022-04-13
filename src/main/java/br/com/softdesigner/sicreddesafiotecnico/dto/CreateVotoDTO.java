@@ -8,5 +8,5 @@ import lombok.Value;
 public class CreateVotoDTO {
     private String sessao;
     private String cpf;
-    private VotoEnum votoEnum;
+    private VotoEnum voto;
 }

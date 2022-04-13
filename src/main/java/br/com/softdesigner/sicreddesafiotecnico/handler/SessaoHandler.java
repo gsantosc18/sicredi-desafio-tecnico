@@ -38,4 +38,9 @@ public class SessaoHandler {
                 .flatMap(sessaoDTO -> ok().bodyValue(sessaoDTO))
                 .switchIfEmpty(notFound().build());
     }
+
+    public Mono<ServerResponse> getAll(ServerRequest request) {
+        log.info("M=findById, message=Find session by id init");
+        return ok().body(sessaoService.getAll(), SessaoDTO.class);
+    }
 }
