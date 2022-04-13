@@ -38,7 +38,7 @@ class VotoServiceTest extends BaseTest {
     @Test
     @DisplayName("Should throw exception invalid document")
     public void shouldThrowExceptionInvalidDocument() {
-        given(userClient.findCpf(CPF)).willReturn(null);
+        given(userClient.findCpf(CPF)).willReturn(Mono.empty());
         StepVerifier.create(votoService.createVoto(createVotoDTO()))
                 .expectError(Exception.class);
     }
@@ -46,7 +46,7 @@ class VotoServiceTest extends BaseTest {
     @Test
     @DisplayName("Should user unable to vote")
     public void shouldUserUnableToVote() {
-        given(userClient.findCpf(CPF)).willReturn(getUserStatusUnableToVote());
+        given(userClient.findCpf(CPF)).willReturn(Mono.just(getUserStatusUnableToVote()));
         StepVerifier.create(votoService.createVoto(createVotoDTO()))
                 .expectError(UserUnableToVoteException.class);
     }
@@ -54,7 +54,7 @@ class VotoServiceTest extends BaseTest {
     @Test
     @DisplayName("Shouldn't vote if invalid session")
     public void shouldntVoteIfInvalidSession() {
-        given(userClient.findCpf(CPF)).willReturn(getUserStatusAbleToVote());
+        given(userClient.findCpf(CPF)).willReturn(Mono.just(getUserStatusAbleToVote()));
         given(sessaoService.findByIdDocument(SESSION_ID)).willReturn(Mono.just(getSessaoTimeInvalid()));
 
         StepVerifier.create(votoService.createVoto(createVotoDTO()))
@@ -64,7 +64,7 @@ class VotoServiceTest extends BaseTest {
     @Test
     @DisplayName("Should create vote success")
     public void shouldCreateVoteSuccess() {
-        given(userClient.findCpf(CPF)).willReturn(getUserStatusAbleToVote());
+        given(userClient.findCpf(CPF)).willReturn(Mono.just(getUserStatusAbleToVote()));
         given(sessaoService.findByIdDocument(SESSION_ID)).willReturn(Mono.just(getSessao()));
         given(associadoService.findOrCreateAssociadoByCpf(CPF)).willReturn(Mono.just(getAssociadoDocument()));
         given(votoRepository.save(any())).willReturn(Mono.just(getVotoDocument()));

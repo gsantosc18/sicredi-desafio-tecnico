@@ -50,7 +50,7 @@ public class VotoRouterTest extends BaseTest {
     public void shouldThrowExceptionIfInvalidDocument() {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
 
-        given(userClient.findCpf(CPF)).willReturn(null);
+        given(userClient.findCpf(CPF)).willReturn(Mono.empty());
 
         webTestClient.post()
                 .uri(ENDPOINT)
@@ -67,9 +67,9 @@ public class VotoRouterTest extends BaseTest {
     @DisplayName("Should throw exception if unable user to vote")
     public void shouldThrowExceptionIfUnableUserToVote() {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
-        UserStatusDTO userStatusDTO = new UserStatusDTO(UNABLE_TO_VOTE);
+        UserStatusDTO userStatusDTO = new UserStatusDTO(UNABLE_TO_VOTE.getValue());
 
-        given(userClient.findCpf(CPF)).willReturn(userStatusDTO);
+        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
 
         webTestClient.post()
                 .uri(ENDPOINT)
@@ -84,9 +84,9 @@ public class VotoRouterTest extends BaseTest {
     @DisplayName("Should throw exception if end session")
     public void shouldThrowExceptionIfEndSession() {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
-        UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE);
+        UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE.getValue());
 
-        given(userClient.findCpf(CPF)).willReturn(userStatusDTO);
+        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocumentInvalid()));
 
         webTestClient.post()
@@ -102,9 +102,9 @@ public class VotoRouterTest extends BaseTest {
     @DisplayName("Should throw exception if invalid session")
     public void shouldThrowExceptionIfInvalidSession() {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
-        UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE);
+        UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE.getValue());
 
-        given(userClient.findCpf(CPF)).willReturn(userStatusDTO);
+        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(sessaoRepository.findById(anyString())).willReturn(Mono.empty());
 
         webTestClient.post()
@@ -120,9 +120,9 @@ public class VotoRouterTest extends BaseTest {
     @DisplayName("Should to accept vote")
     public void shouldAcceptVote() {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
-        UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE);
+        UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE.getValue());
 
-        given(userClient.findCpf(CPF)).willReturn(userStatusDTO);
+        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
         given(associadoRepository.findByCpf(CPF)).willReturn(Mono.just(getAssociadoDocument()));
         given(votoRepository.save(any())).willReturn(Mono.just(getVotoDocument()));
@@ -142,9 +142,9 @@ public class VotoRouterTest extends BaseTest {
     @DisplayName("Should create associado and accept vote")
     public void shouldCreateAssociadoAndAcceptVote() {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
-        UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE);
+        UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE.getValue());
 
-        given(userClient.findCpf(CPF)).willReturn(userStatusDTO);
+        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
         given(associadoRepository.findByCpf(CPF)).willReturn(Mono.empty());
         given(associadoRepository.save(any())).willReturn(Mono.just(getAssociadoDocument()));

@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -42,6 +43,7 @@ public class SessaoRouterTest extends BaseTest {
         final CreateSessaoDTO createSessaoDTO = new CreateSessaoDTO(PAUTA_ID, MINUTES);
 
         given(sessaoRepository.save(any())).willReturn(Mono.just(getSessaoDocument(MINUTES)));
+        given(pautaRepository.findById(anyString())).willReturn(Mono.just(getPautaDocument()));
 
         webTestClient.post()
                 .uri(ENDPOINT)
@@ -66,6 +68,7 @@ public class SessaoRouterTest extends BaseTest {
         final SessaoDocument sessaoDocument = new SessaoDocument(any(), pautaDocument, timePlusMinutes);
 
         given(sessaoRepository.save(sessaoDocument)).willReturn(Mono.just(getSessaoDocument(defaultTime)));
+        given(pautaRepository.findById(anyString())).willReturn(Mono.just(getPautaDocument()));
 
         webTestClient.post()
                 .uri(ENDPOINT)

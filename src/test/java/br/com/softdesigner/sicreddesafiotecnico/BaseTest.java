@@ -29,11 +29,11 @@ public abstract class BaseTest {
     }
 
     protected UserStatusDTO getUserStatusUnableToVote() {
-        return new UserStatusDTO(UNABLE_TO_VOTE);
+        return new UserStatusDTO(UNABLE_TO_VOTE.getValue());
     }
 
     protected UserStatusDTO getUserStatusAbleToVote() {
-        return new UserStatusDTO(ABLE_TO_VOTE);
+        return new UserStatusDTO(ABLE_TO_VOTE.getValue());
     }
 
     protected SessaoDocument getSessaoTimeInvalid() {
