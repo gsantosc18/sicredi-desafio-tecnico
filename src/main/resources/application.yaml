@@ -1,7 +1,20 @@
+server:
+  port: 8088
+
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://gsantosc18:bancoMongo%40123@cluster0.vnkd4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+#      uri: mongodb+srv://gsantosc18:bancoMongo%40123@cluster0.vnkd4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+      host: localhost
+      port: 27017
+      database: desafio
+      username: admin
+      password: password
+      authentication-database: admin
 
+feign:
+  autoconfiguration:
+    jackson:
+      enabled: true
 user:
-  url: https://user-info.herokuapp.com
+  url: "http://user-info.herokuapp.com"

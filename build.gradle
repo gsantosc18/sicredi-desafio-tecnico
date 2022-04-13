@@ -43,7 +43,6 @@ dependencies {
 	// Spring
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
 	// Swagger open api
 	implementation "org.springdoc:springdoc-openapi-webflux-core:$springdocVersion"
@@ -52,6 +51,11 @@ dependencies {
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	implementation 'com.playtika.reactivefeign:feign-reactor-spring-cloud-starter:3.1.2'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
 
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
