@@ -88,6 +88,7 @@ public class VotoRouterTest extends BaseTest {
 
         given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocumentInvalid()));
+        given(associadoRepository.findByCpf(CPF)).willReturn(Mono.just(getAssociadoDocument()));
 
         webTestClient.post()
                 .uri(ENDPOINT)
@@ -106,6 +107,7 @@ public class VotoRouterTest extends BaseTest {
 
         given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(sessaoRepository.findById(anyString())).willReturn(Mono.empty());
+        given(associadoRepository.findByCpf(CPF)).willReturn(Mono.just(getAssociadoDocument()));
 
         webTestClient.post()
                 .uri(ENDPOINT)
@@ -126,6 +128,7 @@ public class VotoRouterTest extends BaseTest {
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
         given(associadoRepository.findByCpf(CPF)).willReturn(Mono.just(getAssociadoDocument()));
         given(votoRepository.save(any())).willReturn(Mono.just(getVotoDocument()));
+        given(votoRepository.findByAssociadoAndSessao(any(),any())).willReturn(Mono.empty());
 
         webTestClient.post()
                 .uri(ENDPOINT)
@@ -149,6 +152,7 @@ public class VotoRouterTest extends BaseTest {
         given(associadoRepository.findByCpf(CPF)).willReturn(Mono.empty());
         given(associadoRepository.save(any())).willReturn(Mono.just(getAssociadoDocument()));
         given(votoRepository.save(any())).willReturn(Mono.just(getVotoDocument()));
+        given(votoRepository.findByAssociadoAndSessao(any(),any())).willReturn(Mono.empty());
 
         webTestClient.post()
                 .uri(ENDPOINT)
@@ -159,5 +163,27 @@ public class VotoRouterTest extends BaseTest {
                 .expectBody()
                 .jsonPath("$").isNotEmpty()
                 .jsonPath("$.voto").isEqualTo(SIM.toString());
+    }
+
+    @Test
+    @DisplayName("Should throw exception if associado voted")
+    public void shouldThrowExceptionIfAssociadoVoted() {
+        CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
+        UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE.getValue());
+
+        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
+        given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
+        given(associadoRepository.findByCpf(CPF)).willReturn(Mono.empty());
+        given(associadoRepository.save(any())).willReturn(Mono.just(getAssociadoDocument()));
+        given(votoRepository.findByAssociadoAndSessao(any(),any())).willReturn(Mono.just(getVotoDocument()));
+
+        webTestClient.post()
+                .uri(ENDPOINT)
+                .contentType(APPLICATION_JSON)
+                .body(Mono.just(createVotoDTO), CreateVotoDTO.class)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("$").isNotEmpty();
     }
 }

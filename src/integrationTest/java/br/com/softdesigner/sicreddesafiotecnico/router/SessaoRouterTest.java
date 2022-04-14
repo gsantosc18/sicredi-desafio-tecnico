@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -103,5 +104,14 @@ public class SessaoRouterTest extends BaseTest {
                 .expectStatus().isNotFound()
                 .expectBody()
                 .isEmpty();
+    }
+
+    @Test
+    @DisplayName("Should get all")
+    public void shouldGetAll() {
+        given(sessaoRepository.findAll()).willReturn(Flux.just(getSessaoDocument(5L),getSessaoDocument(5L)));
+        webTestClient.get().uri(ENDPOINT)
+                .exchange()
+                .expectStatus().isOk();
     }
 }

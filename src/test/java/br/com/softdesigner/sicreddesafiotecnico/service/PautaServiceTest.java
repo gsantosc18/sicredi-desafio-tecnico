@@ -96,4 +96,15 @@ class PautaServiceTest extends BaseTest {
                 .expectNextCount(0)
                 .verifyComplete();
     }
+
+    @Test
+    @DisplayName("Should find by id and return document")
+    public void shouldFindDocumentById() {
+        given(pautaRepository.findById(PAUTA_ID)).willReturn(Mono.just(getPautaDocument()));
+
+        StepVerifier.create(pautaService.findByIdDocument(PAUTA_ID))
+                .assertNext(pautaDocument -> {
+                    assertThat(pautaDocument).isInstanceOf(PautaDocument.class);
+                });
+    }
 }

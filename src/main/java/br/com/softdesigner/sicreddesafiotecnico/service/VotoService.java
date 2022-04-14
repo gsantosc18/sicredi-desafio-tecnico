@@ -75,6 +75,7 @@ public class VotoService {
 
     private Mono<VotoDTO> doCreateVote(CreateVotoDTO createVotoDTO, AssociadoDocument associado, SessaoDocument session, Boolean hasAssociadoSessao) {
         if (hasAssociadoSessao) {
+            log.info("M=doCreateVote, message=Já existe registro de voto do associado.");
             return Mono.error(new UserVoteAlreadyExistException());
         }
         return createVoto(createVotoDTO, session, associado);

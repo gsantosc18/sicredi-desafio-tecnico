@@ -7,7 +7,6 @@ import br.com.softdesigner.sicreddesafiotecnico.exception.UserUnableToVoteExcept
 import br.com.softdesigner.sicreddesafiotecnico.exception.UserVoteAlreadyExistException;
 import br.com.softdesigner.sicreddesafiotecnico.exception.ViolateTimeSessionException;
 import br.com.softdesigner.sicreddesafiotecnico.repository.VotoRepository;
-import feign.FeignException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
