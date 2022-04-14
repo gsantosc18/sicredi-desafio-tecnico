@@ -34,6 +34,7 @@ public class SessaoService {
     }
 
     public Mono<SessaoDTO> createSessao(CreateSessaoDTO createSessaoDTO) {
+        log.info("M=createSessao, message=Inicio da criação de sessão");
         final String id = UUID.randomUUID().toString();
         final LocalDateTime time = LocalDateTime.now(UTC).plusMinutes(createSessaoDTO.getMinutes());
 
@@ -41,7 +42,7 @@ public class SessaoService {
             .flatMap(pauta -> {
                 SessaoDocument sessaoDocument = new SessaoDocument(id, pauta,time);
 
-                sessionTask.schedule(sessaoDocument, dateScheduledTask(time));
+                sessionTask.schedule(id, dateScheduledTask(time));
 
                 return sessaoRepository.save(sessaoDocument).map(SessaoConverter::toDto);
             });

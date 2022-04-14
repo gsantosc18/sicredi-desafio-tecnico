@@ -16,8 +16,9 @@ public class SessionVoteTask {
     private final TaskScheduler taskScheduler;
     private final VoteEndRunner voteEndRunner;
 
-    public void schedule(SessaoDocument sessaoDocument, Date dateTime) {
-        voteEndRunner.setSessaoDocument(sessaoDocument);
+    public void schedule(String sessaoId, Date dateTime) {
+        log.info("M=createSessao, message=Agendado o fim da sessão, time={}", dateTime);
+        voteEndRunner.setSessaoId(sessaoId);
         taskScheduler.schedule(voteEndRunner,dateTime);
     }
 }
