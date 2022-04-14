@@ -4,6 +4,7 @@ import br.com.softdesigner.sicreddesafiotecnico.BaseTest;
 import br.com.softdesigner.sicreddesafiotecnico.client.UserClient;
 import br.com.softdesigner.sicreddesafiotecnico.exception.InvalidDocumentException;
 import br.com.softdesigner.sicreddesafiotecnico.exception.UserUnableToVoteException;
+import br.com.softdesigner.sicreddesafiotecnico.exception.UserVoteAlreadyExistException;
 import br.com.softdesigner.sicreddesafiotecnico.exception.ViolateTimeSessionException;
 import br.com.softdesigner.sicreddesafiotecnico.repository.VotoRepository;
 import feign.FeignException;
@@ -68,10 +69,25 @@ class VotoServiceTest extends BaseTest {
     @DisplayName("Shouldn't vote if invalid session")
     public void shouldntVoteIfInvalidSession() {
         given(userClient.findCpf(CPF)).willReturn(Mono.just(getUserStatusAbleToVote()));
+        given(associadoService.findOrCreateAssociadoByCpf(CPF)).willReturn(Mono.just(getAssociadoDocument()));
         given(sessaoService.findByIdDocument(SESSION_ID)).willReturn(Mono.just(getSessaoTimeInvalid()));
 
         StepVerifier.create(votoService.createVoto(createVotoDTO()))
                 .expectError(ViolateTimeSessionException.class)
+                .verify();
+    }
+
+    @Test
+    @DisplayName("Should throw exception if user already vote")
+    public void shouldThrowExceptionIfUserAlreadyVote() {
+        given(userClient.findCpf(CPF)).willReturn(Mono.just(getUserStatusAbleToVote()));
+        given(sessaoService.findByIdDocument(SESSION_ID)).willReturn(Mono.just(getSessao()));
+        given(associadoService.findOrCreateAssociadoByCpf(CPF)).willReturn(Mono.just(getAssociadoDocument()));
+        given(votoRepository.save(any())).willReturn(Mono.just(getVotoDocument()));
+        given(votoRepository.findByAssociadoAndSessao(any(),any())).willReturn(Mono.just(getVotoDocument()));
+
+        StepVerifier.create(votoService.createVoto(createVotoDTO()))
+                .expectError(UserVoteAlreadyExistException.class)
                 .verify();
     }
 
@@ -82,6 +98,7 @@ class VotoServiceTest extends BaseTest {
         given(sessaoService.findByIdDocument(SESSION_ID)).willReturn(Mono.just(getSessao()));
         given(associadoService.findOrCreateAssociadoByCpf(CPF)).willReturn(Mono.just(getAssociadoDocument()));
         given(votoRepository.save(any())).willReturn(Mono.just(getVotoDocument()));
+        given(votoRepository.findByAssociadoAndSessao(any(),any())).willReturn(Mono.empty());
 
         StepVerifier.create(votoService.createVoto(createVotoDTO()))
             .assertNext(voto -> {

@@ -8,17 +8,12 @@ import br.com.softdesigner.sicreddesafiotecnico.document.VotoDocument;
 import br.com.softdesigner.sicreddesafiotecnico.dto.CreateVotoDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.UserStatusDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.VotoDTO;
-import br.com.softdesigner.sicreddesafiotecnico.exception.InvalidDocumentException;
-import br.com.softdesigner.sicreddesafiotecnico.exception.InvalidSessionException;
-import br.com.softdesigner.sicreddesafiotecnico.exception.UserUnableToVoteException;
-import br.com.softdesigner.sicreddesafiotecnico.exception.ViolateTimeSessionException;
+import br.com.softdesigner.sicreddesafiotecnico.exception.*;
 import br.com.softdesigner.sicreddesafiotecnico.repository.VotoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-
-import java.util.function.Function;
 
 import static br.com.softdesigner.sicreddesafiotecnico.enums.UserStatusEnum.UNABLE_TO_VOTE;
 import static java.time.LocalDateTime.now;
@@ -47,39 +42,42 @@ public class VotoService {
         final String sessaoId = createVotoDTO.getSessao();
 
         return userClient.findCpf(document)
-            .flatMap(processUserStatus(createVotoDTO, document, sessaoId))
+            .flatMap(userStatusDTO-> validateAndProcessAssociado(createVotoDTO, document, sessaoId, userStatusDTO))
             .switchIfEmpty(Mono.error(new InvalidDocumentException()))
             .doOnError(throwable -> Mono.error(new InvalidDocumentException()));
     }
 
-    private Function<UserStatusDTO, Mono<? extends VotoDTO>> processUserStatus(
-            CreateVotoDTO createVotoDTO,
-            String document,
-            String sessaoId
-    ) {
-        return (userStatusDTO) -> {
-            if (UNABLE_TO_VOTE.equals(userStatusDTO.getStatus())) {
-                log.info("M=createVoto, message=O usuário não está apto para votar");
-                return Mono.error(new UserUnableToVoteException());
-            }
-            return sessaoService.findByIdDocument(sessaoId)
-                    .flatMap(processSessaoDocument(createVotoDTO, document))
-                    .switchIfEmpty(Mono.error(new InvalidSessionException()));
-        };
+    private Mono<VotoDTO> validateAndProcessAssociado(CreateVotoDTO createVotoDTO, String document, String sessaoId, UserStatusDTO userStatusDTO) {
+        if (UNABLE_TO_VOTE.equals(userStatusDTO.getStatus())) {
+            log.info("M=createVoto, message=O usuário não está apto para votar");
+            return Mono.error(new UserUnableToVoteException());
+        }
+        return getOrCreateAssociadoByCpf(document)
+                .flatMap(associado -> processAssociado(createVotoDTO, sessaoId, associado));
     }
 
-    private Function<SessaoDocument, Mono<? extends VotoDTO>> processSessaoDocument(
-            CreateVotoDTO createVotoDTO,
-            String document
-    ) {
-        return (session) -> {
-            if (session.getTime().isBefore(now())) {
-                log.info("M=createVoto, message=A sessão informada já foi encerrada");
-                return Mono.error(new ViolateTimeSessionException());
-            }
-            return getOrCreateAssociadoByCpf(document)
-                    .flatMap(associado -> createVoto(createVotoDTO, session, associado));
-        };
+    private Mono<VotoDTO> processAssociado(CreateVotoDTO createVotoDTO, String sessaoId, AssociadoDocument associado) {
+        return sessaoService.findByIdDocument(sessaoId)
+                .flatMap(session -> validateAndProcessAssociado(createVotoDTO, associado, session));
+    }
+
+    private Mono<VotoDTO> validateAndProcessAssociado(CreateVotoDTO createVotoDTO, AssociadoDocument associado, SessaoDocument session) {
+        if (session.getTime().isBefore(now())) {
+            log.info("M=createVoto, message=A sessão informada já foi encerrada");
+            return Mono.error(new ViolateTimeSessionException());
+        }
+
+        return votoRepository.findByAssociadoAndSessao(associado, session)
+            .hasElement()
+            .flatMap(hasAssociadoSessao -> doCreateVote(createVotoDTO, associado, session, hasAssociadoSessao))
+            .switchIfEmpty(Mono.error(new InvalidSessionException()));
+    }
+
+    private Mono<VotoDTO> doCreateVote(CreateVotoDTO createVotoDTO, AssociadoDocument associado, SessaoDocument session, Boolean hasAssociadoSessao) {
+        if (hasAssociadoSessao) {
+            return Mono.error(new UserVoteAlreadyExistException());
+        }
+        return createVoto(createVotoDTO, session, associado);
     }
 
     private Mono<VotoDTO> createVoto(CreateVotoDTO createVotoDTO, SessaoDocument sessao, AssociadoDocument associadoDocument) {

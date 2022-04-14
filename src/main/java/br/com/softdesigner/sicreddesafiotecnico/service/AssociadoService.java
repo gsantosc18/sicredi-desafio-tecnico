@@ -14,9 +14,12 @@ public class AssociadoService {
     private final AssociadoRepository associadoRepository;
 
     public Mono<AssociadoDocument> findOrCreateAssociadoByCpf(String cpf) {
-        return associadoRepository
-                .findByCpf(cpf)
+        return findByCpf(cpf)
                 .switchIfEmpty(Mono.defer(() -> createAssociado(cpf)));
+    }
+
+    private Mono<AssociadoDocument> findByCpf(String cpf) {
+        return associadoRepository.findByCpf(cpf);
     }
 
     public Mono<AssociadoDocument> createAssociado(String document) {
