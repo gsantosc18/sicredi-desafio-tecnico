@@ -38,4 +38,8 @@ public class PautaService {
     public Mono<PautaDTO> findById(String id) {
         return pautaRepository.findById(id).map(PautaConverter::toDto);
     }
+
+    public Mono<PautaDocument> findByIdDocument(String id) {
+        return pautaRepository.findById(id);
+    }
 }

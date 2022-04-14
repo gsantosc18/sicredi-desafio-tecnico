@@ -1,7 +1,6 @@
 package br.com.softdesigner.sicreddesafiotecnico.service;
 
 import br.com.softdesigner.sicreddesafiotecnico.converter.SessaoConverter;
-import br.com.softdesigner.sicreddesafiotecnico.document.PautaDocument;
 import br.com.softdesigner.sicreddesafiotecnico.document.SessaoDocument;
 import br.com.softdesigner.sicreddesafiotecnico.dto.CreateSessaoDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.SessaoDTO;
@@ -24,21 +23,21 @@ import static java.time.ZoneOffset.UTC;
 @Slf4j
 public class SessaoService {
     private final SessaoRepository sessaoRepository;
-    private final PautaRepository pautaRepository;
     private final SessionVoteTask sessionTask;
+    private final PautaService pautaService;
 
     @Autowired
-    public SessaoService(SessaoRepository sessaoRepository, PautaRepository pautaRepository, SessionVoteTask sessionTask) {
+    public SessaoService(SessaoRepository sessaoRepository, SessionVoteTask sessionTask, PautaService pautaService) {
         this.sessaoRepository = sessaoRepository;
-        this.pautaRepository = pautaRepository;
         this.sessionTask = sessionTask;
+        this.pautaService = pautaService;
     }
 
     public Mono<SessaoDTO> createSessao(CreateSessaoDTO createSessaoDTO) {
         final String id = UUID.randomUUID().toString();
         final LocalDateTime time = LocalDateTime.now(UTC).plusMinutes(createSessaoDTO.getMinutes());
 
-        return pautaRepository.findById(createSessaoDTO.getPauta())
+        return pautaService.findByIdDocument(createSessaoDTO.getPauta())
             .flatMap(pauta -> {
                 SessaoDocument sessaoDocument = new SessaoDocument(id, pauta,time);
 

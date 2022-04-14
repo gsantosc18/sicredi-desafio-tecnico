@@ -15,6 +15,7 @@ public class FeingConfig {
     public UserClient userClient() {
         return WebReactiveFeign
                 .<UserClient>builder()
+                .decode404()
                 .target(UserClient.class,url);
     }
 }

@@ -2,9 +2,11 @@ package br.com.softdesigner.sicreddesafiotecnico.service;
 
 import br.com.softdesigner.sicreddesafiotecnico.BaseTest;
 import br.com.softdesigner.sicreddesafiotecnico.client.UserClient;
+import br.com.softdesigner.sicreddesafiotecnico.exception.InvalidDocumentException;
 import br.com.softdesigner.sicreddesafiotecnico.exception.UserUnableToVoteException;
 import br.com.softdesigner.sicreddesafiotecnico.exception.ViolateTimeSessionException;
 import br.com.softdesigner.sicreddesafiotecnico.repository.VotoRepository;
+import feign.FeignException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -40,7 +42,8 @@ class VotoServiceTest extends BaseTest {
     public void shouldThrowExceptionInvalidDocument() {
         given(userClient.findCpf(CPF)).willReturn(Mono.empty());
         StepVerifier.create(votoService.createVoto(createVotoDTO()))
-                .expectError(Exception.class);
+                .expectError(InvalidDocumentException.class)
+                .verify();
     }
 
     @Test
@@ -48,7 +51,17 @@ class VotoServiceTest extends BaseTest {
     public void shouldUserUnableToVote() {
         given(userClient.findCpf(CPF)).willReturn(Mono.just(getUserStatusUnableToVote()));
         StepVerifier.create(votoService.createVoto(createVotoDTO()))
-                .expectError(UserUnableToVoteException.class);
+                .expectError(UserUnableToVoteException.class)
+                .verify();
+    }
+
+    @Test
+    @DisplayName("Should throw exception on consume rest api")
+    public void shouldThrowExceptionOnConsumeRestApi() {
+        given(userClient.findCpf(CPF)).willReturn(Mono.error(new InvalidDocumentException()));
+        StepVerifier.create(votoService.createVoto(createVotoDTO()))
+                .expectError(InvalidDocumentException.class)
+                .verify();
     }
 
     @Test
@@ -58,7 +71,8 @@ class VotoServiceTest extends BaseTest {
         given(sessaoService.findByIdDocument(SESSION_ID)).willReturn(Mono.just(getSessaoTimeInvalid()));
 
         StepVerifier.create(votoService.createVoto(createVotoDTO()))
-                .expectError(ViolateTimeSessionException.class);
+                .expectError(ViolateTimeSessionException.class)
+                .verify();
     }
 
     @Test
@@ -77,6 +91,7 @@ class VotoServiceTest extends BaseTest {
                 assertThat(voto.getSessao().getTime()).isAfter(now());
                 assertThat(voto.getAssociado().getCpf()).isEqualTo(CPF);
                 assertThat(voto.getAssociado().getId()).isEqualTo(ASSOCIADO_ID);
-            });
+            })
+            .verifyComplete();
     }
 }
