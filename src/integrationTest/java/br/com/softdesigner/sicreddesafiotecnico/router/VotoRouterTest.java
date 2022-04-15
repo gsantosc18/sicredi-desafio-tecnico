@@ -50,6 +50,7 @@ public class VotoRouterTest extends BaseTest {
     public void shouldThrowExceptionIfInvalidDocument() {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
 
+        given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
         given(userClient.findCpf(CPF)).willReturn(Mono.empty());
 
         webTestClient.post()
@@ -59,8 +60,6 @@ public class VotoRouterTest extends BaseTest {
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody().jsonPath("$").isNotEmpty();
-
-        verify(sessaoRepository, never()).findById(anyString());
     }
 
     @Test
@@ -69,6 +68,7 @@ public class VotoRouterTest extends BaseTest {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
         UserStatusDTO userStatusDTO = new UserStatusDTO(UNABLE_TO_VOTE.getValue());
 
+        given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
         given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
 
         webTestClient.post()
@@ -166,13 +166,13 @@ public class VotoRouterTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Should throw exception if associado voted")
-    public void shouldThrowExceptionIfAssociadoVoted() {
+    @DisplayName("Should throw exception if associado already voted")
+    public void shouldThrowExceptionIfAssociadoAlreadyVoted() {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
         UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE.getValue());
 
-        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
+        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(associadoRepository.findByCpf(CPF)).willReturn(Mono.empty());
         given(associadoRepository.save(any())).willReturn(Mono.just(getAssociadoDocument()));
         given(votoRepository.findByAssociadoAndSessao(any(),any())).willReturn(Mono.just(getVotoDocument()));

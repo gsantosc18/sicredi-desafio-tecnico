@@ -40,6 +40,7 @@ class VotoServiceTest extends BaseTest {
     @Test
     @DisplayName("Should throw exception invalid document")
     public void shouldThrowExceptionInvalidDocument() {
+        given(sessaoService.findByIdDocument(SESSION_ID)).willReturn(Mono.just(getSessao()));
         given(userClient.findCpf(CPF)).willReturn(Mono.empty());
         StepVerifier.create(votoService.createVoto(createVotoDTO()))
                 .expectError(InvalidDocumentException.class)
@@ -49,6 +50,7 @@ class VotoServiceTest extends BaseTest {
     @Test
     @DisplayName("Should user unable to vote")
     public void shouldUserUnableToVote() {
+        given(sessaoService.findByIdDocument(SESSION_ID)).willReturn(Mono.just(getSessao()));
         given(userClient.findCpf(CPF)).willReturn(Mono.just(getUserStatusUnableToVote()));
         StepVerifier.create(votoService.createVoto(createVotoDTO()))
                 .expectError(UserUnableToVoteException.class)
@@ -58,6 +60,7 @@ class VotoServiceTest extends BaseTest {
     @Test
     @DisplayName("Should throw exception on consume rest api")
     public void shouldThrowExceptionOnConsumeRestApi() {
+        given(sessaoService.findByIdDocument(SESSION_ID)).willReturn(Mono.just(getSessao()));
         given(userClient.findCpf(CPF)).willReturn(Mono.error(new InvalidDocumentException()));
         StepVerifier.create(votoService.createVoto(createVotoDTO()))
                 .expectError(InvalidDocumentException.class)

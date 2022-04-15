@@ -1,11 +1,11 @@
 package br.com.softdesigner.sicreddesafiotecnico;
 
+import br.com.softdesigner.sicreddesafiotecnico.converter.PautaConverter;
 import br.com.softdesigner.sicreddesafiotecnico.document.AssociadoDocument;
 import br.com.softdesigner.sicreddesafiotecnico.document.PautaDocument;
 import br.com.softdesigner.sicreddesafiotecnico.document.SessaoDocument;
 import br.com.softdesigner.sicreddesafiotecnico.document.VotoDocument;
-import br.com.softdesigner.sicreddesafiotecnico.dto.CreateVotoDTO;
-import br.com.softdesigner.sicreddesafiotecnico.dto.UserStatusDTO;
+import br.com.softdesigner.sicreddesafiotecnico.dto.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -56,5 +56,17 @@ public abstract class BaseTest {
 
     protected VotoDocument getVotoDocument() {
         return new VotoDocument(getAssociadoDocument(),getSessao(),SIM);
+    }
+
+    protected CreatePautaDTO getCreatePautaDTO() {
+        return new CreatePautaDTO(PAUTA_NAME);
+    }
+
+    protected PautaDTO getPautaDTO() {
+        return PautaConverter.toDto(getPautaDocument());
+    }
+
+    protected SessaoDTO getSessaoDTO() {
+        return new SessaoDTO(SESSION_ID, getPautaDTO(), LocalDateTime.now());
     }
 }

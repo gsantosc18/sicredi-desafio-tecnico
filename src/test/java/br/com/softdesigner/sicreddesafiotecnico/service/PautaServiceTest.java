@@ -15,7 +15,6 @@ import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -29,7 +28,7 @@ class PautaServiceTest extends BaseTest {
     @Test
     @DisplayName("Should create new pauta")
     void shouldCreateNewPauta() {
-        CreatePautaDTO createPautaDTO = new CreatePautaDTO(PAUTA_NAME);
+        CreatePautaDTO createPautaDTO = getCreatePautaDTO();
 
         given(pautaRepository.save(any(PautaDocument.class)))
                 .willReturn(Mono.just(getPautaDocument()));
