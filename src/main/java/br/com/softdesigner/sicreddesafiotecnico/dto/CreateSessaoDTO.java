@@ -1,8 +1,11 @@
 package br.com.softdesigner.sicreddesafiotecnico.dto;
 
-import lombok.Value;
+import lombok.*;
 
-@Value
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateSessaoDTO {
     public static final int DEFAULT_MINUTES = 1;
 

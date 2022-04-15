@@ -8,8 +8,4 @@ public class InvalidDocumentException extends ResponseStatusException {
     public InvalidDocumentException() {
         super(BAD_REQUEST, "O documento informado é invalido.");
     }
-
-    public InvalidDocumentException(String message) {
-        super(BAD_REQUEST, message);
-    }
 }

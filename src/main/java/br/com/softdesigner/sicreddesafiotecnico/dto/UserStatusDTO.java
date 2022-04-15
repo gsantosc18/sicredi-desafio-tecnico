@@ -4,9 +4,8 @@ import lombok.*;
 
 import java.io.Serializable;
 
-@Getter @Setter
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserStatusDTO implements Serializable {
     private String status;
 }
