@@ -4,11 +4,9 @@ import br.com.softdesigner.sicreddesafiotecnico.dto.VotoResultadoDTO;
 import br.com.softdesigner.sicreddesafiotecnico.enums.VotoEnum;
 import br.com.softdesigner.sicreddesafiotecnico.rabbit.VotoSender;
 import br.com.softdesigner.sicreddesafiotecnico.repository.VotoRepository;
-import br.com.softdesigner.sicreddesafiotecnico.service.VotoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
