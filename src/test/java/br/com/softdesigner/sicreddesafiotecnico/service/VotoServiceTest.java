@@ -6,6 +6,7 @@ import br.com.softdesigner.sicreddesafiotecnico.exception.InvalidDocumentExcepti
 import br.com.softdesigner.sicreddesafiotecnico.exception.UserUnableToVoteException;
 import br.com.softdesigner.sicreddesafiotecnico.exception.UserVoteAlreadyExistException;
 import br.com.softdesigner.sicreddesafiotecnico.exception.ViolateTimeSessionException;
+import br.com.softdesigner.sicreddesafiotecnico.rabbit.VotoSender;
 import br.com.softdesigner.sicreddesafiotecnico.repository.VotoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,9 @@ class VotoServiceTest extends BaseTest {
 
     @Mock
     private UserClient userClient;
+
+    @Mock
+    private VotoSender votoSender;
 
     @InjectMocks
     private VotoService votoService;

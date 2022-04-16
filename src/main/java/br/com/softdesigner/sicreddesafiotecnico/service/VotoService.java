@@ -10,7 +10,9 @@ import br.com.softdesigner.sicreddesafiotecnico.dto.UserStatusDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.VotoDTO;
 import br.com.softdesigner.sicreddesafiotecnico.enums.VotoEnum;
 import br.com.softdesigner.sicreddesafiotecnico.exception.*;
+import br.com.softdesigner.sicreddesafiotecnico.rabbit.VotoSender;
 import br.com.softdesigner.sicreddesafiotecnico.repository.VotoRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,22 +23,13 @@ import static java.time.LocalDateTime.now;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class VotoService {
     private final VotoRepository votoRepository;
     private final UserClient userClient;
     private final AssociadoService associadoService;
     private final SessaoService sessaoService;
-
-    @Autowired
-    public VotoService(VotoRepository votoRepository,
-                       UserClient userClient,
-                       AssociadoService associadoService,
-                       SessaoService sessaoService) {
-        this.votoRepository = votoRepository;
-        this.userClient = userClient;
-        this.associadoService = associadoService;
-        this.sessaoService = sessaoService;
-    }
+    private final VotoSender votoSender;
 
     public Mono<VotoDTO> createVoto(CreateVotoDTO createVotoDTO) {
         final String document = createVotoDTO.getCpf();
@@ -106,6 +99,12 @@ public class VotoService {
     private Mono<VotoDTO> createNewVoto(SessaoDocument sessao, AssociadoDocument associadoDocument, VotoEnum votoEnum) {
         log.info("M=createVoto, message=Voto registrado");
         final VotoDocument votoDocument = new VotoDocument(associadoDocument, sessao, votoEnum);
-        return votoRepository.save(votoDocument).map(VotoConverver::toDTO);
+        return votoRepository.save(votoDocument).map(this::converteAndSendVoto);
+    }
+
+    private VotoDTO converteAndSendVoto(VotoDocument votoDocument) {
+        var votoDTO = VotoConverver.toDTO(votoDocument);
+        votoSender.sendVoto(votoDTO);
+        return votoDTO;
     }
 }

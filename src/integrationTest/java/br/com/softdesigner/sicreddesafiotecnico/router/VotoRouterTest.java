@@ -5,6 +5,7 @@ import br.com.softdesigner.sicreddesafiotecnico.client.UserClient;
 import br.com.softdesigner.sicreddesafiotecnico.dto.CreateVotoDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.UserStatusDTO;
 import br.com.softdesigner.sicreddesafiotecnico.handler.VotoHandler;
+import br.com.softdesigner.sicreddesafiotecnico.rabbit.VotoSender;
 import br.com.softdesigner.sicreddesafiotecnico.repository.AssociadoRepository;
 import br.com.softdesigner.sicreddesafiotecnico.repository.SessaoRepository;
 import br.com.softdesigner.sicreddesafiotecnico.repository.VotoRepository;
@@ -22,8 +23,6 @@ import static br.com.softdesigner.sicreddesafiotecnico.enums.VotoEnum.SIM;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Import({VotoHandler.class, VotoRouter.class})
@@ -41,6 +40,9 @@ public class VotoRouterTest extends BaseTest {
 
     @MockBean
     private VotoRepository votoRepository;
+
+    @MockBean
+    private VotoSender votoSender;
 
     @Autowired
     private WebTestClient webTestClient;
