@@ -1,10 +1,12 @@
 package br.com.softdesigner.sicreddesafiotecnico.router.interfaces;
 
+import br.com.softdesigner.sicreddesafiotecnico.dto.CreateVotoDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.VotoDTO;
 import br.com.softdesigner.sicreddesafiotecnico.handler.VotoHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
@@ -32,6 +34,12 @@ public interface VotoRouterIT {
                                     content = @Content(schema = @Schema(
                                             implementation = VotoDTO.class
                                     ))
+                            ),
+                            requestBody = @RequestBody(
+                                    description = "Parâmetros necessários para a votação",
+                                    content = @Content(
+                                            schema = @Schema(implementation = CreateVotoDTO.class)
+                                    )
                             )
                     )
             )

@@ -4,6 +4,7 @@ import br.com.softdesigner.sicreddesafiotecnico.dto.CreateSessaoDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.SessaoDTO;
 import br.com.softdesigner.sicreddesafiotecnico.handler.SessaoHandler;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -35,13 +36,15 @@ public interface SessaoRouterIT {
                             responses = {
                                     @ApiResponse(
                                             responseCode = "201",
-                                            description = "Sessão criada com sucesso"
+                                            description = "Sessão criada com sucesso",
+                                            content = @Content(
+                                                    schema = @Schema(implementation = SessaoDTO.class)
+                                            )
                                     )
                             },
                             requestBody = @RequestBody(
                                     description = "Parâmetros de criação da sessão",
                                     content = @Content(
-                                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
                                             schema = @Schema(implementation = CreateSessaoDTO.class, required = true)
                                     )
                             )
@@ -89,7 +92,7 @@ public interface SessaoRouterIT {
                                             responseCode = "200",
                                             description = "Lista as sessões criadas",
                                             content = @Content(
-                                                    schema = @Schema(implementation = SessaoDTO.class)
+                                                    array = @ArraySchema(schema = @Schema(implementation = SessaoDTO.class))
                                             )
                                     )
                             }
