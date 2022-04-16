@@ -9,5 +9,5 @@ import reactor.core.publisher.Mono;
 @Headers({ "Accept: application/json" })
 public interface UserClient {
     @RequestLine("GET /users/{cpf}")
-    Mono<UserStatusDTO> findCpf(@Param String cpf);
+    Mono<UserStatusDTO> findUserStatusByCpf(@Param String cpf);
 }
