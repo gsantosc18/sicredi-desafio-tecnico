@@ -14,7 +14,7 @@ import br.com.softdesigner.sicreddesafiotecnico.rabbit.VotoSender;
 import br.com.softdesigner.sicreddesafiotecnico.repository.VotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -47,10 +47,16 @@ public class VotoService {
                     sessao.getId());
             return Mono.error(new ViolateTimeSessionException());
         }
-        return userClient.findCpf(document)
+        return getUserStatusByDocumentClientRest(document)
                 .flatMap(userStatus -> verifyUserStatusAndCreateVote(userStatus, sessao, document, votoEnum))
                 .doOnError(throwable -> Mono.just(new InvalidDocumentException()))
                 .switchIfEmpty(Mono.error(new InvalidDocumentException()));
+    }
+
+    @Cacheable(value = "userStatusClientData", key = "#document", unless="#result == null")
+    private Mono<UserStatusDTO> getUserStatusByDocumentClientRest(String document) {
+        log.info("M=getUserStatusByDocumentClientRest, message=Iniciado a pesquisa de documento.");
+        return userClient.findUserStatusByCpf(document);
     }
 
     private Mono<VotoDTO> verifyUserStatusAndCreateVote(UserStatusDTO userStatusDTO,
@@ -98,7 +104,7 @@ public class VotoService {
 
     private Mono<VotoDTO> createNewVoto(SessaoDocument sessao, AssociadoDocument associadoDocument, VotoEnum votoEnum) {
         log.info("M=createVoto, message=Voto registrado");
-        final VotoDocument votoDocument = new VotoDocument(associadoDocument, sessao, votoEnum);
+        final VotoDocument votoDocument = new VotoDocument(associadoDocument, sessao, votoEnum.getValue());
         return votoRepository.save(votoDocument).map(this::converteAndSendVoto);
     }
 
