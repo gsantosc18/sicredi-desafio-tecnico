@@ -1,10 +1,14 @@
 package br.com.softdesigner.sicreddesafiotecnico.router.interfaces;
 
+import br.com.softdesigner.sicreddesafiotecnico.dto.CreatePautaDTO;
 import br.com.softdesigner.sicreddesafiotecnico.dto.PautaDTO;
 import br.com.softdesigner.sicreddesafiotecnico.handler.PautaHandler;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
@@ -27,13 +31,19 @@ public interface PautaRouterIT {
                     beanMethod = "createNewPauta",
                     operation = @Operation(
                             operationId = "createNewPauta",
-                            responses = @ApiResponse(
-                                    responseCode = "204",
-                                    description = "Pauta criada com sucesso",
-                                    content = @Content(schema = @Schema(
-                                            implementation = PautaDTO.class
-                                    ))
-                            )
+                            requestBody = @RequestBody(
+                                    description = "Parâmetros de criação da pauta",
+                                    content = @Content(
+                                            schema = @Schema(implementation = CreatePautaDTO.class, required = true)
+                                    )
+                            ),
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "201",
+                                            description = "Pauta criada com sucesso",
+                                            content = @Content(schema = @Schema(implementation = PautaDTO.class))
+                                    )
+                            }
                     )
             ),
             @RouterOperation(
@@ -82,6 +92,13 @@ public interface PautaRouterIT {
                                     @ApiResponse(
                                             responseCode = "404",
                                             description = "A pauta não foi encontrada"
+                                    )
+                            },
+                            parameters = {
+                                    @Parameter(
+                                            in = ParameterIn.PATH,
+                                            name = "id",
+                                            description = "Chave única da pauta"
                                     )
                             }
                     )
