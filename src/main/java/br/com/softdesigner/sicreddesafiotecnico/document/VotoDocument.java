@@ -11,5 +11,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class VotoDocument {
     private AssociadoDocument associado;
     private SessaoDocument sessao;
-    private VotoEnum voto;
+    private String voto;
 }
