@@ -53,7 +53,7 @@ public class VotoRouterTest extends BaseTest {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
 
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
-        given(userClient.findCpf(CPF)).willReturn(Mono.empty());
+        given(userClient.findUserStatusByCpf(CPF)).willReturn(Mono.empty());
 
         webTestClient.post()
                 .uri(ENDPOINT)
@@ -71,7 +71,7 @@ public class VotoRouterTest extends BaseTest {
         UserStatusDTO userStatusDTO = new UserStatusDTO(UNABLE_TO_VOTE.getValue());
 
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
-        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
+        given(userClient.findUserStatusByCpf(CPF)).willReturn(Mono.just(userStatusDTO));
 
         webTestClient.post()
                 .uri(ENDPOINT)
@@ -88,7 +88,7 @@ public class VotoRouterTest extends BaseTest {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
         UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE.getValue());
 
-        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
+        given(userClient.findUserStatusByCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocumentInvalid()));
         given(associadoRepository.findByCpf(CPF)).willReturn(Mono.just(getAssociadoDocument()));
 
@@ -107,7 +107,7 @@ public class VotoRouterTest extends BaseTest {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
         UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE.getValue());
 
-        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
+        given(userClient.findUserStatusByCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(sessaoRepository.findById(anyString())).willReturn(Mono.empty());
         given(associadoRepository.findByCpf(CPF)).willReturn(Mono.just(getAssociadoDocument()));
 
@@ -126,7 +126,7 @@ public class VotoRouterTest extends BaseTest {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
         UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE.getValue());
 
-        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
+        given(userClient.findUserStatusByCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
         given(associadoRepository.findByCpf(CPF)).willReturn(Mono.just(getAssociadoDocument()));
         given(votoRepository.save(any())).willReturn(Mono.just(getVotoDocument()));
@@ -149,7 +149,7 @@ public class VotoRouterTest extends BaseTest {
         CreateVotoDTO createVotoDTO = new CreateVotoDTO(SESSION_ID, CPF, SIM);
         UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE.getValue());
 
-        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
+        given(userClient.findUserStatusByCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
         given(associadoRepository.findByCpf(CPF)).willReturn(Mono.empty());
         given(associadoRepository.save(any())).willReturn(Mono.just(getAssociadoDocument()));
@@ -174,7 +174,7 @@ public class VotoRouterTest extends BaseTest {
         UserStatusDTO userStatusDTO = new UserStatusDTO(ABLE_TO_VOTE.getValue());
 
         given(sessaoRepository.findById(anyString())).willReturn(Mono.just(getSessaoDocument(15L)));
-        given(userClient.findCpf(CPF)).willReturn(Mono.just(userStatusDTO));
+        given(userClient.findUserStatusByCpf(CPF)).willReturn(Mono.just(userStatusDTO));
         given(associadoRepository.findByCpf(CPF)).willReturn(Mono.empty());
         given(associadoRepository.save(any())).willReturn(Mono.just(getAssociadoDocument()));
         given(votoRepository.findByAssociadoAndSessao(any(),any())).willReturn(Mono.just(getVotoDocument()));

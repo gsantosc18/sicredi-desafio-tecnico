@@ -37,7 +37,7 @@ public abstract class BaseTest {
     }
 
     protected VotoDocument getVotoDocument() {
-        return new VotoDocument(getAssociadoDocument(), getSessaoDocument(120L), SIM);
+        return new VotoDocument(getAssociadoDocument(), getSessaoDocument(120L), SIM.getValue());
     }
 
     protected AssociadoDocument getAssociadoDocument() {

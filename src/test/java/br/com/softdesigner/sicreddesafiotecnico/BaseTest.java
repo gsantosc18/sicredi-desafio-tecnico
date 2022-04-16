@@ -55,7 +55,7 @@ public abstract class BaseTest {
     }
 
     protected VotoDocument getVotoDocument() {
-        return new VotoDocument(getAssociadoDocument(),getSessao(),SIM);
+        return new VotoDocument(getAssociadoDocument(),getSessao(),SIM.getValue());
     }
 
     protected CreatePautaDTO getCreatePautaDTO() {
