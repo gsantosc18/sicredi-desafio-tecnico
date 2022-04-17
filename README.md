@@ -24,7 +24,6 @@ Além das ferramentas pedidas no desafio, foi utilizado alguns outros recursos p
 - Jacoco: Um gerador de relatório de cobertura de testes que facilita a visualização dos mesmos.
 
 ## Sobre a API
----
 Entende-se que em uma votação, o passo inicial é criar a pauta, seguido do inicio da sessão e depois vem os votos dos associados. Foi seguido essa mesma lógica para a implementação do projeto, que consiste em:
 - Criar a pauta
 - Criar e iniciar a sessão
@@ -33,7 +32,6 @@ Entende-se que em uma votação, o passo inicial é criar a pauta, seguido do in
   Ao iniciar a sessão, uma agenda é criada para a data e hora atual mais a quantidade de minutos informados para a sessão. Após o encerramento da sessão, a nenhum associado é permitido votar.
 
 ## Instalação
----
 Para iniciar o projeto é necessário executar alguns comandos:
 ### Criação dos containers
     docker-compose up -d --build
