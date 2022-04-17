@@ -8,7 +8,6 @@ spring:
     allow-bean-definition-overriding: true
   data:
     mongodb:
-#      uri: mongodb+srv://gsantosc18:bancoMongo%40123@cluster0.vnkd4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
       host: mongodb
       port: 27017
       database: desafio
