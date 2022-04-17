@@ -29,7 +29,8 @@ Entende-se que em uma votação, o passo inicial é criar a pauta, seguido do in
 - Criar e iniciar a sessão
 - Realizar a votação
 - Publicar o resultado da votação
-  Ao iniciar a sessão, uma agenda é criada para a data e hora atual mais a quantidade de minutos informados para a sessão. Após o encerramento da sessão, a nenhum associado é permitido votar.
+
+Ao iniciar a sessão, uma agenda é criada para a data e hora atual mais a quantidade de minutos informados para a sessão. Após o encerramento da sessão, a nenhum associado é permitido votar.
 
 ## Instalação
 Para iniciar o projeto é necessário executar alguns comandos:
