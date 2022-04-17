@@ -1,4 +1,4 @@
-# DESAFIO TÉCNICO - SICRED
+# DESAFIO TÉCNICO - SICREDI
 ## Ferramentas utilizadas
 ---
 - Java 11
