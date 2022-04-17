@@ -55,3 +55,7 @@ Para iniciar o projeto é necessário executar alguns comandos:
 - Local
 
   [http://localhost/](http://localhost/)
+- Swagger
+  
+  [http://localhost/swagger-ui.html](http://localhost/swagger-ui.html)
+  
