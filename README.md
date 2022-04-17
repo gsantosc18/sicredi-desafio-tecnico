@@ -1,6 +1,6 @@
 # DESAFIO TÉCNICO - SICREDI
+
 ## Ferramentas utilizadas
----
 - Java 11
 - Spring
     - Boot
@@ -17,7 +17,6 @@
 - SpringDoc/Swagger
 
 ## Breve explicação da escolha das ferramentas
----
 Além das ferramentas pedidas no desafio, foi utilizado alguns outros recursos para facilitar o desenvolvimento do projeto, como:
 - Docker-compose: Um orquestrador de containers que permite criar toda a infraestrutura de serviços do projeto.
 - Lombok: Para a diminuição de código e foco no que é importante.
