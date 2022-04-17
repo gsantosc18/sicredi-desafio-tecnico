@@ -14,8 +14,10 @@ import br.com.softdesigner.sicreddesafiotecnico.rabbit.VotoSender;
 import br.com.softdesigner.sicreddesafiotecnico.repository.VotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import reactor.cache.CacheMono;
 import reactor.core.publisher.Mono;
 
 import static br.com.softdesigner.sicreddesafiotecnico.enums.UserStatusEnum.UNABLE_TO_VOTE;
@@ -53,7 +55,6 @@ public class VotoService {
                 .switchIfEmpty(Mono.error(new InvalidDocumentException()));
     }
 
-    @Cacheable(value = "userStatusClientData", key = "#document", unless="#result == null")
     private Mono<UserStatusDTO> getUserStatusByDocumentClientRest(String document) {
         log.info("M=getUserStatusByDocumentClientRest, message=Iniciado a pesquisa de documento.");
         return userClient.findUserStatusByCpf(document);
