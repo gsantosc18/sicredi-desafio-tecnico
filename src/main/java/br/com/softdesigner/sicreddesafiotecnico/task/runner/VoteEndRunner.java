@@ -10,9 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
-import javax.annotation.PostConstruct;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import static br.com.softdesigner.sicreddesafiotecnico.enums.VotoEnum.NAO;
 import static br.com.softdesigner.sicreddesafiotecnico.enums.VotoEnum.SIM;
 
